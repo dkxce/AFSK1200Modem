@@ -1,0 +1,549 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AgwpePort</name>
+    </assembly>
+    <members>
+        <member name="F:AgwpePort.AgwpePort.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.#ctor">
+            <summary>
+            Constructor for the AgwpePort class which initializes the component then creates a new thread to 
+            connect to a AGWPE process running on host/port.
+            The radioPort, agwpeHost and port are initialize to 0, "localhost" and 8000 respectively.
+            </summary>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.#ctor(System.ComponentModel.IContainer)">
+            <summary>
+            Constructor for the AgwpePort class, used by the Visual Studio IDE, which initializes the component 
+            then creates a new thread to connect to a AGWPE process running on host/port.
+            The radioPort, agwpeHost and port are initialize to 0, "localhost" and 8000 respectively.
+            </summary>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.#ctor(System.Byte)">
+            <summary>
+            Constructor for the AgwpePort class which initializes the component then creates a new thread to 
+            connect to a AGWPE process running on host/port.
+            </summary>
+            <param name="radioPort">The AGWPE configured radio port to use for sending and receiving packet data.</param>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.#ctor(System.Byte,System.String)">
+            <summary>
+            Constructor for the AgwpePort class which initializes the component then creates a new thread to 
+            connect to a AGWPE process running on host/port.
+            </summary>
+            <param name="radioPort">The AGWPE configured radio port to use for sending and receiving packet data.</param>
+            <param name="host">The hostname or IP address of the machine running AGWPE, default is "localhost".</param>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.#ctor(System.Byte,System.String,System.Int32)">
+            <summary>
+            Constructor for the AgwpePort class which initializes the component then creates a new thread to 
+            connect to a AGWPE process running on host/port.
+            </summary>
+            <param name="radioPort">The AGWPE configured radio port to use for sending and receiving packet data.</param>
+            <param name="host">The hostname or IP address of the machine running AGWPE, default is "localhost".</param>
+            <param name="port">The TCP port that AGWPE is listening on, default is port 8000.</param>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.Open">
+            <summary>
+            Creates a new thread to connect to a AGWPE process running on host/port.
+            </summary>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.Open(System.Byte)">
+            <summary>
+            Creates a new thread to connect to a AGWPE process running on host/port.
+            </summary>
+            <param name="radioPort">The AGWPE configured radio port to use for sending and receiving packet data.</param>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.Open(System.Byte,System.String)">
+            <summary>
+            Creates a new thread to connect to a AGWPE process running on host/port.
+            </summary>
+            <param name="radioPort">The AGWPE configured radio port to use for sending and receiving packet data.</param>
+            <param name="host">The hostname or IP address of the machine running AGWPE, default is "localhost".</param>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.Open(System.Byte,System.String,System.Int32)">
+            <summary>
+            Creates a new thread to connect to a AGWPE process running on host/port.
+            </summary>
+            <param name="radioPort">The AGWPE configured radio port to use for sending and receiving packet data.</param>
+            <param name="host">The hostname or IP address of the machine running AGWPE, default is "localhost".</param>
+            <param name="port">The TCP port that AGWPE is listening on, default is port 8000.</param>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.Close">
+            <summary>
+            Closes the connection and ends the thread used to talk to the AGWPE process.
+            </summary>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.DataAvailable">
+            <summary>
+            Checks to see if any data is ready to be read from the AGWPE connection.
+            </summary>
+            <returns>Returns true if data is available.</returns>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.IsOpen">
+            <summary>
+            Checks to see if the connection thread and TCP connection are alive.
+            </summary>
+            <returns>Returns true if the thread and connection are alive.</returns>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.GetAgwpeFrame(System.Byte,System.UInt32)">
+            <summary>
+            
+            </summary>
+            <param name="dataKind"></param>
+            <param name="dataLen"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.GetViaChain(System.String[])">
+            <summary>
+            Converts the String array past in the via parameter to a single byte array containing data 
+            from all elements of the original String array.
+            </summary>
+            <param name="via">A String array containing a list of relay stations, one in each element of the array.</param>
+            <returns>A single byte array containing data from all elements of the original String array.
+            </returns>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.AppLogin(System.String,System.String)">
+            <summary>
+            Sends login information to a AGWPE process running on a remote machine.
+            </summary>
+            <param name="userName">A Login name as configured in the WinSock Interface Security tab of AGWPE.</param>
+            <param name="password">A Password as configured in the WinSock Interface Security tab of AGWPE.</param>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.RegisterCallSign(System.String)">
+            <summary>
+            An application needs to register at least one callsign with AGWPE as a pre-requisite to be able to send data thru an AX.25
+            port or to sustain a connection and before any attempt to do so.
+            An application could register almost anything as a callsign, for example: W5ZIO-1 or EOC
+            </summary>
+            <param name="callSign">An identifier for this station.</param>
+            <returns>Returns true or false depending on the success of the registration.</returns>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.UnRegisterCallSign(System.String)">
+            <summary>
+            This is the opposite function of RegisterCallSign, it means the callsign is no longer used by the
+            application. From the moment the application becomes unregistered, all activity heard by AGWPE on the AX.25 
+            ports directed to that callsign is ignored.
+            </summary>
+            <param name="callFrom">The identifier being unregistered.</param>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.GetVersion">
+            <summary>
+            Requests the major and minor version from the AGWPE process application.
+            </summary>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.GetPortInfo">
+            <summary>
+            Requests information about all currently defined radio ports.
+            </summary>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.GetPortCapability(System.Byte)">
+            <summary>
+            Requests information about a specific radio port.
+            </summary>
+            <param name="radioPort">The AGWPE configured radio port information is being requested for.</param>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.GetConnectionFrames(System.Byte,System.String,System.String)">
+            <summary>
+            Requests the number of frames queued to be transmitted on a currently defined radio port for the connection specified
+            by the callFrom and callTo parameters.
+            </summary>
+            <param name="radioPort">The AGWPE configured radio port information is being requested for.</param>
+            <param name="callFrom">An identifier for this station if this station initiated the connection, or the remote station otherwise.</param>
+            <param name="callTo">The identifier of the remote packet station if the remote station initiated the connection, or this station otherwise.</param>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.GetOutstandingFrames(System.Byte)">
+            <summary>
+            Requests the total number of frames, queued by all connections, to be transmitted on a currently defined radio port.
+            </summary>
+            <param name="radioPort">The AGWPE configured radio port information is being requested for.</param>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.StationsHeard(System.Byte)">
+            <summary>
+            Requests the last 20 stations heard by AGWPE. THe stations heard will be returned by 20 different AGWPE frames,
+            each containing one station heard or default information if less than 20 stations have been heard. 
+            These 20 stations are stored in AGWPE, so each time AGWPE is started the list starts over with 0 stations heard.
+            </summary>
+            <param name="radioPort">The AGWPE configured radio port the station list is being requested for.</param>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.StartMonitoring">
+            <summary>
+            Enable monitoring of activity on all configured radio ports. Traffic is not filtered by any callsign.
+            </summary>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.SendUnproto(System.Byte,System.String,System.String,System.Byte[])">
+            <summary>
+            Used to send AX.25 unproto (UI) frames. No callsign registration is required before using this method.
+            This method is used for APRS, beacons, message broadcasts, NETROM L3 broadcasts, 
+            TCP/IP over AX.25, FBB mail, etc.
+            </summary>
+            <param name="radioPort">The AGWPE configured radio port to use for sending packet data.</param>
+            <param name="callFrom">An identifier for this station.</param>
+            <param name="callTo">The identifier of the remote packet station.</param>
+            <param name="data">A byte array of data to be sent.</param>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.SendUnproto(System.Byte,System.String,System.String,System.Byte[],System.String[])">
+            <summary>
+            Used to send AX.25 unproto (UI) frames. No callsign registration is required before using this method.
+            This method is used for APRS, beacons, message broadcasts, NETROM L3 broadcasts, 
+            TCP/IP over AX.25, FBB mail, etc.
+            </summary>
+            <param name="radioPort">The AGWPE configured radio port to use for sending packet data.</param>
+            <param name="callFrom">An identifier for this station.</param>
+            <param name="callTo">The identifier of the remote packet station.</param>
+            <param name="data">A byte array of data to be sent.</param>
+            <param name="via">A String array containing a list of relay stations, one in each element of the array.</param>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.AX25Connect(System.Byte,System.String,System.String)">
+            <summary>
+            Used to send port and callsign information to AGWPE when an AX.25 connection with another station is required.
+            The station originating the connection (CallFrom) must have been previously registered with AGWPE for the
+            connection to be successfully established.
+            </summary>
+            <param name="radioPort">The AGWPE configured radio port to use for sending and receiving packet data.</param>
+            <param name="callFrom">An identifier for this station.</param>
+            <param name="callTo">The identifier of the remote packet station.</param>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.AX25Connect(System.Byte,System.String,System.String,System.String[])">
+            <summary>
+            Used to send port and callsign information to AGWPE when an AX.25 connection with another station is required.
+            The station originating the connection (CallFrom) must have been previously registered with AGWPE for the
+            connection to be successfully established.
+            </summary>
+            <param name="radioPort">The AGWPE configured radio port to use for sending and receiving packet data.</param>
+            <param name="callFrom">An identifier for this station.</param>
+            <param name="callTo">The identifier of the remote packet station.</param>
+            <param name="via">A String array containing a list of relay stations, one in each element of the array.</param>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.AX25Connect(System.Byte,System.String,System.String,System.Byte)">
+            <summary>
+            Used to send port and callsign information to AGWPE when an AX.25 connection with another station is required.
+            The station originating the connection (CallFrom) must have been previously registered with AGWPE for the
+            connection to be successfully established.
+            </summary>
+            <param name="radioPort">The AGWPE configured radio port to use for sending and receiving packet data.</param>
+            <param name="callFrom">An identifier for this station.</param>
+            <param name="callTo">The identifier of the remote packet station.</param>
+            <param name="pid">The non-standard AX.25 PID to be used for this connection. AX.25 data frames must use the same PID.</param>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.SendAX25Data(System.Byte,System.String,System.String,System.Byte[])">
+            <summary>
+            Used to send data over an established AX.25 connection.
+            </summary>
+            <param name="radioPort">The AGWPE configured radio port to use for sending packet data.</param>
+            <param name="callFrom">An identifier for this station.</param>
+            <param name="callTo">The identifier of the remote packet station.</param>
+            <param name="data">A byte array of data to be sent.</param>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.SendAX25Data(System.Byte,System.String,System.String,System.Byte[],System.Byte)">
+            <summary>
+            Used to send data over an established AX.25 connection.
+            </summary>
+            <param name="radioPort">The AGWPE configured radio port to use for sending packet data.</param>
+            <param name="callFrom">An identifier for this station.</param>
+            <param name="callTo">The identifier of the remote packet station.</param>
+            <param name="data">A byte array of data to be sent.</param>
+            <param name="pid">The non-standard AX.25 PID to be used for this connection. The AX.25 connection frame must use the same PID.</param>
+        </member>
+        <member name="M:AgwpePort.AgwpePort.AX25Disconnect(System.Byte,System.String,System.String)">
+            <summary>
+            Used to send port and callsign information to AGWPE to disconnect an AX.25 connection with another station.
+            If a disconnection request is sent without a connection first being established, AGWPE will ignore the request.
+            </summary>
+            <param name="radioPort">The AGWPE configured radio used by the established connection.</param>
+            <param name="callFrom">An identifier for this station.</param>
+            <param name="callTo">The identifier of the remote packet station.</param>
+        </member>
+        <member name="P:AgwpePort.AgwpePort.RadioPort">
+            <summary>
+            Gets or sets the AGWPE configured radio port to use for sending and receiving packet data.
+            </summary>
+        </member>
+        <member name="P:AgwpePort.AgwpePort.Host">
+            <summary>
+            Gets or sets the hostname or IP address of the machine running a AGWPE process.
+            </summary>
+        </member>
+        <member name="P:AgwpePort.AgwpePort.Port">
+            <summary>
+            Gets or sets the TCP port number used to connect to a running AGWPE process.
+            </summary>
+        </member>
+        <member name="P:AgwpePort.AgwpePort.TimeOut">
+            <summary>
+            Gets or sets the timeout value, in milliseconds, used when waiting on data to be read from AGWPE.
+            </summary>
+        </member>
+        <member name="M:AgwpePort.AgwpeFrame.GetEndOfText(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="bytes"></param>
+            <param name="index"></param>
+            <param name="count"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AgwpePort.AgwpeFrame.Parse(System.String,System.Int32,System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="str"></param>
+            <param name="offset"></param>
+            <param name="from"></param>
+            <param name="to"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AgwpePort.AgwpeFrame.GetEndOfHeader(System.Byte[],System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="bytes"></param>
+            <param name="count"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AgwpePort.AgwpeData.#ctor">
+            <summary>
+            Constructor for the AgwpeData class.
+            </summary>
+        </member>
+        <member name="M:AgwpePort.AgwpeData.AddByte(System.Byte)">
+            <summary>
+            Add a single byte to the data bufer.
+            </summary>
+            <param name="value">The byte value to add to the data buffer.</param>
+            <returns>Returns the total number of bytes in the data buffer.</returns>
+        </member>
+        <member name="M:AgwpePort.AgwpeData.Clear">
+            <summary>
+             Removes all bytes from the data buffer.
+            </summary>
+        </member>
+        <member name="M:AgwpePort.AgwpeData.GetByte">
+            <summary>
+            Get a single byte value from the data buffer.  This method permanently removes the byte read from the buffer.
+            </summary>
+            <returns>Returns the next available byte from the data buffer.</returns>
+        </member>
+        <member name="M:AgwpePort.AgwpeData.GetBytes(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Get an array of byte values from the data buffer.  This method permanently removes the bytes read from the buffer.
+            </summary>
+            <param name="buffer">A byte array to store the bytes read from the data buffer.</param>
+            <param name="offset">The offset within byte array to start storing bytes read from the data buffer.</param>
+            <param name="size">The number of bytes to store in the byte array.</param>
+            <returns>Returns the actual number of bytes read from the data buffer.</returns>
+        </member>
+        <member name="M:AgwpePort.AgwpeData.ToByteArray">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:AgwpePort.AgwpeData.Count">
+            <summary>
+            Get the number of bytes in the data buffer.
+            </summary>
+        </member>
+        <member name="T:AgwpePort.AgwpeException">
+            <summary>
+            This class is currently unused and may be removed at a future time.
+            </summary>
+        </member>
+        <member name="T:AgwpePort.AgwpeEventArgs">
+            <summary>
+            Provides data for the OnFrameReceived event.
+            </summary>
+        </member>
+        <member name="M:AgwpePort.AgwpeEventArgs.#ctor(System.Byte[],System.Byte[])">
+            <summary>
+            Constructor for the AgwpeEventArgs class.
+            </summary>
+            <param name="header">A byte array containing the received AGWPE frame header.</param>
+            <param name="data">A byte array containing the received AGWPE frame data.</param>
+        </member>
+        <member name="P:AgwpePort.AgwpeEventArgs.FrameHeader">
+            <summary>
+            Gets an AgwpeHeader object representing the received AGWPE frame header.
+            </summary>
+        </member>
+        <member name="P:AgwpePort.AgwpeEventArgs.FrameData">
+            <summary>
+            Gets an object representing the received AGWPE frame data.
+            </summary>
+            <remarks>
+            The returned object is specific to the DataKind value as follows:
+            DataKind    Object type
+            --------    --------------------
+                R       AgwpeVersion
+                G       AgwpePortInfo
+                g       AgwpePortCapability
+                X       boolean
+                y       int
+                Y       int
+                H       AgwpeStationsHeard
+                C       AgwpeAX25Connect
+                D       AgwpeAX25Data
+                d       AgwpeAX25Disconnect
+                U       AgwpeMoniUnproto
+                I       AgwpeMoniConnInfo
+                S       AgwpeMoniSuperInfo
+                T       AgwpeMoniOwn
+                K       AgwpeMoniRaw
+            </remarks>
+        </member>
+        <member name="P:AgwpePort.AgwpeEventArgs.HeaderBytes">
+            <summary>
+            Gets a byte array containing the received AGWPE frame header.
+            </summary>
+        </member>
+        <member name="P:AgwpePort.AgwpeEventArgs.DataBytes">
+            <summary>
+            Gets a byte array containing the received AGWPE frame data.
+            </summary>
+        </member>
+        <member name="T:AgwpePort.AgwpeHeader">
+            <summary>
+            Contains the header information for an AGWPE frame.
+            </summary>
+        </member>
+        <member name="M:AgwpePort.AgwpeHeader.#ctor(System.Byte[])">
+            <summary>
+            Constructor for the AgwpeHeader structure.
+            </summary>
+            <param name="header">A byte array containing the received AGWPE frame header.</param>
+        </member>
+        <member name="P:AgwpePort.AgwpeHeader.Port">
+            <summary>
+            Gets the AGWPE configured radio port the transmission was heard on.
+            </summary>
+        </member>
+        <member name="P:AgwpePort.AgwpeHeader.CallFrom">
+            <summary>
+            Gets the identifier used by the originator of the packet transmission.
+            </summary>
+        </member>
+        <member name="P:AgwpePort.AgwpeHeader.CallTo">
+            <summary>
+            Gets the registered identifier used by the intended recipient of the packet transmission.
+            </summary>
+        </member>
+        <member name="P:AgwpePort.AgwpeHeader.DataKind">
+            <summary>
+            Gets the one byte identifier which indicates the type of data associated with the received AGWPE frame.
+            </summary>
+        </member>
+        <member name="P:AgwpePort.AgwpeHeader.Pid">
+            <summary>
+            Gets the PID of the received AGWPE frame.
+            </summary>
+        </member>
+        <member name="P:AgwpePort.AgwpeHeader.DataLen">
+            <summary>
+            Gets the length, in bytes, of data associated with the received AGWPE frame.
+            </summary>
+        </member>
+        <member name="T:AgwpePort.AgwpeVersion">
+            <summary>
+            Contains data returned in an AGWPE "R" frame.
+            </summary>
+        </member>
+        <member name="M:AgwpePort.AgwpeVersion.#ctor(System.Byte[])">
+            <summary>
+            Constructor for the AgwpeVersion class.
+            </summary>
+            <param name="data">The data associated with the AGWPE frame information contained in an AgwpeEventArgs object.</param>
+        </member>
+        <member name="M:AgwpePort.AgwpeVersion.ToString">
+            <summary>
+            Converts the numeric version information of this instance to it equivalent string representation.
+            </summary>
+            <returns>A string representation of the major and minor version of the AGWPE software.</returns>
+        </member>
+        <member name="P:AgwpePort.AgwpeVersion.Major">
+            <summary>
+            Get the major version number of the AGWPE software.
+            </summary>
+        </member>
+        <member name="P:AgwpePort.AgwpeVersion.Minor">
+            <summary>
+            Get the minor version number of the AGWPE software.
+            </summary>
+        </member>
+        <member name="T:AgwpePort.AgwpePortInfo">
+            <summary>
+            Contains data returned in an AGWPE "G" frame: Get port information for all configured AGWPE radio ports.
+            </summary>
+        </member>
+        <member name="M:AgwpePort.AgwpePortInfo.#ctor(System.Byte[],System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="data"></param>
+            <param name="dataLen"></param>
+        </member>
+        <member name="M:AgwpePort.AgwpePortInfo.ToString">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:AgwpePort.AgwpePortInfo.PortInfo">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:AgwpePort.AgwpePortInfo.PortCount">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:AgwpePort.AgwpePortCapability">
+            <summary>
+            Contains data returned in an AGWPE "g" frame: Get port capability for a specified radio port.
+            </summary>
+        </member>
+        <member name="T:AgwpePort.AgwpeStationsHeard">
+            <summary>
+            Contains data returned in an AGWPE "H" frame: Get a list of the last 20 stations heard on a specified port. This frame is 
+            returned by AGWPE 20 times. Once for each station in the list. The data will be "blank" for all 
+            frames after the last station heard if less than 20 stations have been heard.
+            </summary>
+        </member>
+        <member name="T:AgwpePort.AgwpeAX25Connect">
+            <summary>
+            Contains data returned in an AGWPE "C" frame: Read AX25 Connection frames.
+            </summary>
+        </member>
+        <member name="T:AgwpePort.AgwpeAX25Data">
+            <summary>
+            Contains data returned in an AGWPE "d", "D", "S" "T" or "K" frame.
+            </summary>
+        </member>
+        <member name="T:AgwpePort.AgwpeMoniConnInfo">
+            <summary>
+            Contains data returned in an AGWPE "I" frame: Read AX25 Information frames and data.
+            </summary>
+        </member>
+        <member name="T:AgwpePort.AgwpeMoniUnproto">
+            <summary>
+            Contains data returned in an AGWPE "U" frame: Read AX25 Unproto frames and data sent from a remote packet radio station.
+            </summary>
+        </member>
+    </members>
+</doc>

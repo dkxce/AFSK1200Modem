@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AFSKModem", "AFSKModem.csproj", "{529D47B0-1CAD-4B86-823F-7121A6D6781A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{529D47B0-1CAD-4B86-823F-7121A6D6781A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{529D47B0-1CAD-4B86-823F-7121A6D6781A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{529D47B0-1CAD-4B86-823F-7121A6D6781A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{529D47B0-1CAD-4B86-823F-7121A6D6781A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
