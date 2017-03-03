@@ -345,79 +345,244 @@ namespace ReadWave
         {
             MemoryStream ms = new MemoryStream();
             WriteWav16BitMono(ms, sampleRate, mono);
-            PlayStream(ms, wait);
+            PlayStream(ms, wait, true);
         }
 
         public static void PlaySamples(int sampleRate, double[] mono, bool wait)
         {
             MemoryStream ms = new MemoryStream();
             WriteWav16BitMono(ms, sampleRate, mono);
-            PlayStream(ms, wait);
+            PlayStream(ms, wait, true);
         }
 
         public static void PlaySamples(int sampleRate, float[] left, float[] right, bool wait)
         {
             MemoryStream ms = new MemoryStream();
             WriteWav16BitStereo(ms, sampleRate, left, right);
-            PlayStream(ms, wait);
+            PlayStream(ms, wait, true);
         }
 
         public static void PlaySamples(int sampleRate, double[] left, double[] right, bool wait)
         {
             MemoryStream ms = new MemoryStream();
             WriteWav16BitStereo(ms, sampleRate, left, right);
-            PlayStream(ms, wait);
+            PlayStream(ms, wait, true);
         }
 
-        public static void PlayStream(Stream stream, bool wait)
-        {            
+        public static void PlayStream(Stream stream, bool wait, bool closeStream)
+        {
             stream.Position = 0;
-
-            //Microsoft.DirectX.DirectSound.DevicesCollection dc = new Microsoft.DirectX.DirectSound.DevicesCollection();
-            //foreach (Microsoft.DirectX.DirectSound.DeviceInformation di in dc)
-            //    Console.WriteLine(di.Description);
-            //Microsoft.DirectX.DirectSound.Device d = new Microsoft.DirectX.DirectSound.Device(dc[1].DriverGuid);
-            //Microsoft.DirectX.DirectSound.Buffer b = new Microsoft.DirectX.DirectSound.Buffer(stream, d);
-            //b.Play(int.MaxValue, Microsoft.DirectX.DirectSound.BufferPlayFlags.Default);
-            //return;
 
             if (wait)
             {
-                System.Media.SoundPlayer sp = new System.Media.SoundPlayer(stream);
-                sp.PlaySync();
-                stream.Close();                
+                NAudio.Wave.WaveFileReader wfr = new NAudio.Wave.WaveFileReader(stream);
+                NAudio.Wave.WaveOutEvent wo = new NAudio.Wave.WaveOutEvent();
+                wo.Init(wfr);
+                wo.Play();
+                while (wo.PlaybackState == NAudio.Wave.PlaybackState.Playing)
+                    System.Threading.Thread.Sleep(10);
+                if (closeStream)
+                {
+                    wfr.Close();
+                    stream.Close();
+                    stream = null;
+                };
             }
             else
             {
                 System.Threading.Thread thr = new System.Threading.Thread(Play);
-                thr.Start(stream);
+                thr.Start(new object[] { stream, closeStream });
             };
         }
 
         public static void PlayFile(string filename, bool wait)
         {            
-            FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read);
-            stream.Position = 0;
+            FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read);                        
+
             if (wait)
-            {
-                System.Media.SoundPlayer sp = new System.Media.SoundPlayer(stream);
-                sp.PlaySync();
+            {                
+                NAudio.Wave.WaveFileReader wfr = new NAudio.Wave.WaveFileReader(stream);
+                NAudio.Wave.WaveOutEvent wo = new NAudio.Wave.WaveOutEvent();
+                wo.Init(wfr);
+                wo.Play();
+                while (wo.PlaybackState == NAudio.Wave.PlaybackState.Playing)
+                    System.Threading.Thread.Sleep(10);
+                wfr.Close();
                 stream.Close();
             }
             else
             {
                 System.Threading.Thread thr = new System.Threading.Thread(Play);
-                thr.Start(stream);
+                thr.Start(new object[] { stream, true });
             };
         }
 
-        private static void Play(object strm)
+        private static void Play(object stream_close)
         {
-            Stream stream = (Stream)strm;
-            System.Media.SoundPlayer sp = new System.Media.SoundPlayer(stream);
-            sp.PlaySync();
-            stream.Close();
-            stream = null;
+            object[] strmcls = (object[])stream_close;
+            Stream stream = (Stream)strmcls[0];
+            bool closeStream = (bool)strmcls[1];
+
+            NAudio.Wave.WaveFileReader wfr = new NAudio.Wave.WaveFileReader(stream);
+            NAudio.Wave.WaveOutEvent wo = new NAudio.Wave.WaveOutEvent();
+            wo.Init(wfr);
+            wo.Play();
+            while (wo.PlaybackState == NAudio.Wave.PlaybackState.Playing)
+                System.Threading.Thread.Sleep(10);
+            if (closeStream)
+            {
+                wfr.Close();
+                stream.Close();
+                stream = null;
+            };
         }
-    }    
+    }
+
+    public class WavePlayer
+    {
+        private int dev = 0;
+        private float vol = -1;
+
+        public WavePlayer() {}
+
+        public WavePlayer(float Volume)
+        {
+            this.vol = Volume;
+        }
+
+        public WavePlayer(int DeviceNo)
+        {
+            this.dev = DeviceNo;
+        }
+
+        public WavePlayer(int DeviceNo, float Volume)
+        {
+            this.dev = DeviceNo;
+            this.vol = Volume;
+        }
+
+        public int DeviceNo
+        {
+            get { return dev; }
+            set { dev = value; }
+        }
+
+        public float Volume
+        {
+            get 
+            {
+                if (vol == -1)
+                {
+                    NAudio.Wave.WaveOutEvent woe = new NAudio.Wave.WaveOutEvent();
+                    woe.DeviceNumber = dev;
+                    return woe.Volume;
+                }
+                else
+                    return vol; 
+            }
+            set { vol = value; }
+        }
+
+        public void PlaySamples(int sampleRate, float[] mono, bool wait)
+        {
+            MemoryStream ms = new MemoryStream();
+            WaveStream.WriteWav16BitMono(ms, sampleRate, mono);
+            PlayStream(ms, wait, true);
+        }
+
+        public void PlaySamples(int sampleRate, double[] mono, bool wait)
+        {
+            MemoryStream ms = new MemoryStream();
+            WaveStream.WriteWav16BitMono(ms, sampleRate, mono);
+            PlayStream(ms, wait, true);
+        }
+
+        public void PlaySamples(int sampleRate, float[] left, float[] right, bool wait)
+        {
+            MemoryStream ms = new MemoryStream();
+            WaveStream.WriteWav16BitStereo(ms, sampleRate, left, right);
+            PlayStream(ms, wait, true);
+        }
+
+        public void PlaySamples(int sampleRate, double[] left, double[] right, bool wait)
+        {
+            MemoryStream ms = new MemoryStream();
+            WaveStream.WriteWav16BitStereo(ms, sampleRate, left, right);
+            PlayStream(ms, wait, true);
+        }
+
+        public void PlayStream(Stream stream, bool wait, bool closeStream)
+        {
+            stream.Position = 0;
+
+            if (wait)
+            {
+                NAudio.Wave.WaveFileReader wfr = new NAudio.Wave.WaveFileReader(stream);
+                NAudio.Wave.WaveOutEvent wo = new NAudio.Wave.WaveOutEvent();
+                wo.DeviceNumber = dev;
+                if (vol != -1) wo.Volume = vol;
+                wo.Init(wfr);
+                wo.Play();
+                while (wo.PlaybackState == NAudio.Wave.PlaybackState.Playing)
+                    System.Threading.Thread.Sleep(10);
+                if (closeStream)
+                {
+                    wfr.Close();
+                    stream.Close();
+                    stream = null;
+                };
+            }
+            else
+            {
+                System.Threading.Thread thr = new System.Threading.Thread(Play);
+                thr.Start(new object[] { stream, closeStream });
+            };
+        }
+
+        public void PlayFile(string filename, bool wait)
+        {
+            FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read);
+
+            if (wait)
+            {
+                NAudio.Wave.WaveFileReader wfr = new NAudio.Wave.WaveFileReader(stream);
+                NAudio.Wave.WaveOutEvent wo = new NAudio.Wave.WaveOutEvent();
+                wo.DeviceNumber = dev;
+                if (vol != -1) wo.Volume = vol;
+                wo.Init(wfr);
+                wo.Play();
+                while (wo.PlaybackState == NAudio.Wave.PlaybackState.Playing)
+                    System.Threading.Thread.Sleep(10);
+                wfr.Close();
+                stream.Close();
+            }
+            else
+            {
+                System.Threading.Thread thr = new System.Threading.Thread(Play);
+                thr.Start(new object[] { stream, true });
+            };
+        }
+
+        private void Play(object stream_close)
+        {
+            object[] strmcls = (object[])stream_close;
+            Stream stream = (Stream)strmcls[0];
+            bool closeStream = (bool)strmcls[1];
+
+            NAudio.Wave.WaveFileReader wfr = new NAudio.Wave.WaveFileReader(stream);
+            NAudio.Wave.WaveOutEvent wo = new NAudio.Wave.WaveOutEvent();
+            wo.DeviceNumber = dev;
+            if (vol != -1) wo.Volume = vol;            
+            wo.Init(wfr);
+            wo.Play();
+            while (wo.PlaybackState == NAudio.Wave.PlaybackState.Playing)
+                System.Threading.Thread.Sleep(10);
+            if (closeStream)
+            {
+                wfr.Close();
+                stream.Close();
+                stream = null;
+            };
+        }
+    }
 }

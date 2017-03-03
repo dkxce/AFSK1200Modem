@@ -22,6 +22,18 @@ namespace ReadWave
             return str.ToArray();
         }
 
+        public static string[] WaveOutDevices()
+        {
+            List<string> str = new List<string>();
+            int waveOutDevices = WaveOut.DeviceCount;
+            for (int waveOutDevice = 0; waveOutDevice < waveOutDevices; waveOutDevice++)
+            {
+                WaveOutCapabilities deviceInfo = WaveOut.GetCapabilities(waveOutDevice);
+                str.Add(String.Format("Device {0}: {1}", waveOutDevice, deviceInfo.ProductName));
+            };
+            return str.ToArray();
+        }
+
         public DirectAudioAFSKDemodulator(int deviceNo, ax25.PacketHandler h)
         {
             dem = new ax25.AFSK1200Demodulator(44100, 1, 0, h);
