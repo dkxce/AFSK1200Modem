@@ -53,6 +53,7 @@ namespace ReadWave
             DirectAudioAFSKDemodulator m = new DirectAudioAFSKDemodulator(0, new TestConsole("T2>> {0}"));
             m.Start();
             WaveStream.PlayFile("test4.wav", true);
+            //while (true) System.Threading.Thread.Sleep(100);
             m.Stop();
 
             Console.WriteLine("Test {0} done", 2);
@@ -107,6 +108,38 @@ namespace ReadWave
             Console.WriteLine("Test {0} done", 4);
         }
 
+        // demodulate from direct input
+        public static void Test5(int deviceNo)
+        {
+            Console.WriteLine("AFSK1200 AX.25 Modem");
+            string[] lwd = DirectAudioAFSKDemodulator.WaveInDevices();
+            if (lwd != null)
+            {
+                Console.WriteLine("You Can Use Device:");
+                foreach (string l in lwd)
+                    Console.WriteLine(" {0}", l);
+            };
+            if (deviceNo < 0)
+            {
+                Console.WriteLine("Syntax:");
+                Console.WriteLine(" AFSKModem.exe <deviceNo>");
+                Console.WriteLine("Example:");
+                if (lwd != null)
+                    for(int i=0;i<lwd.Length;i++)
+                        Console.WriteLine(" AFSKModem.exe {0}", i);
+                Console.WriteLine();
+                deviceNo = 0;
+            };
+            Console.WriteLine("Starting Demodulation of Audio Input AFSK1200 AX.25 APRS");
+            Console.WriteLine("Using Device: {0}", DirectAudioAFSKDemodulator.WaveInDevices()[deviceNo]);
+
+            DirectAudioAFSKDemodulator m = new DirectAudioAFSKDemodulator(deviceNo, new TestConsole("{0}"));
+            m.Start();
+            while (true) Console.ReadLine();
+            m.Stop();
+        }
+
+
         public class TestConsole : ax25.PacketHandler
         {
             private string frm = "{0}";
@@ -116,7 +149,8 @@ namespace ReadWave
 
             public void handlePacket(sbyte[] bytes)
             {
-                Console.WriteLine(frm, ax25.Packet.Format(bytes));
+                string packet = ax25.Packet.Format(bytes);
+                Console.WriteLine(frm, packet);
             }
         }
     }

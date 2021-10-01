@@ -36,6 +36,7 @@ namespace ReadWave
 
         public DirectAudioAFSKDemodulator(int deviceNo, ax25.PacketHandler h)
         {
+            // WaveInDevices();
             dem = new ax25.AFSK1200Demodulator(44100, 1, 0, h);
             recored = new WaveInEvent();
             recored.DeviceNumber = deviceNo;

@@ -28,10 +28,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AgwpePort, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\AgwpePort.dll</HintPath>
-    </Reference>
+    <Reference Include="AgwpePort, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="NAudio, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\NAudio.dll</HintPath>

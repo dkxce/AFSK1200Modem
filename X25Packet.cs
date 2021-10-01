@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 
 namespace ax25
@@ -197,9 +199,9 @@ namespace ax25
                 }
                 else
                 {
-                    path = new string[path.Length + 1];
-                    Array.Copy(path, path, path.Length + 1);
-                    path[path.Length - 1] = path_element;
+                    List<string> np = new List<string>(path);
+                    np.Add(path_element);
+                    path = np.ToArray();
                 };
             }
 

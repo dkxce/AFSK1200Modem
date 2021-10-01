@@ -12,6 +12,9 @@ namespace ReadWave
     {        
         static void Main(string[] args)
         {
+            AFSK1200ModemTest.Test5(args == null || args.Length == 0 ? -1 : int.Parse(args[0]));
+            return;
+
             bool test = true;
             bool aprsis = true;
             bool afwe = false;
