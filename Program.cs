@@ -1,7 +1,4 @@
 using System;
-using System.Runtime.InteropServices;
-using System.Collections;
-using System.IO;
 using System.Collections.Generic;
 using System.Text;
 using System.Net.Sockets;
@@ -12,13 +9,50 @@ namespace ReadWave
     {        
         static void Main(string[] args)
         {
+            if(args != null && args.Length > 0 && args[0] == "test6")
+            {
+                AFSK1200ModemTest.Test6();
+                Console.WriteLine("Press Enter to Exit");
+                Console.ReadLine();
+                return;
+            };
+            if (args != null && args.Length > 0 && args[0] == "test4")
+            {
+                AFSK1200ModemTest.Test4();
+                Console.WriteLine("Press Enter to Exit");
+                Console.ReadLine();
+                return;
+            };
+            if (args != null && args.Length > 0 && args[0] == "test3")
+            {
+                AFSK1200ModemTest.Test3();
+                Console.WriteLine("Press Enter to Exit");
+                Console.ReadLine();
+                return;
+            };
+            if (args != null && args.Length > 0 && args[0] == "test2")
+            {
+                AFSK1200ModemTest.Test2();
+                Console.WriteLine("Press Enter to Exit");
+                Console.ReadLine();
+                return;
+            };
+            if (args != null && args.Length > 0 && args[0] == "test1")
+            {
+                AFSK1200ModemTest.Test1();
+                Console.WriteLine("Press Enter to Exit");
+                Console.ReadLine();
+                return;
+            };
             AFSK1200ModemTest.Test5(args == null || args.Length == 0 ? -1 : int.Parse(args[0]));
             return;
 
-            bool test = true;
+            // another tests: connect to remote servers //
+
+            bool test   = false;
             bool aprsis = true;
-            bool afwe = false;
-            bool sound = true;
+            bool afwe   = false;
+            bool sound  = true;
 
             if (test)
             {
@@ -26,6 +60,8 @@ namespace ReadWave
                 AFSK1200ModemTest.Test2();
                 AFSK1200ModemTest.Test3();
                 AFSK1200ModemTest.Test4();
+                //AFSK1200ModemTest.Test5(-1);
+                AFSK1200ModemTest.Test6();
             };
             
             
@@ -103,7 +139,7 @@ namespace ReadWave
             };
             Console.ReadLine();
 
-            tcpc.Close();
+            if(tcpc != null) tcpc.Close();
             if(agwe != null) agwe.Close();
         }
 

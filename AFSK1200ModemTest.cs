@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Net;
 using System.Text;
 
 namespace ReadWave
@@ -52,7 +52,7 @@ namespace ReadWave
 
             DirectAudioAFSKDemodulator m = new DirectAudioAFSKDemodulator(0, new TestConsole("T2>> {0}"));
             m.Start();
-            WaveStream.PlayFile("test4.wav", true);
+            WaveStream.PlayFile("test2.wav", true);
             //while (true) System.Threading.Thread.Sleep(100);
             m.Stop();
 
@@ -139,6 +139,31 @@ namespace ReadWave
             m.Stop();
         }
 
+        // IPv4 ROUTES
+        public static void Test6(bool play = true)
+        {
+            ax25.AFSK1200Modulator mod = new ax25.AFSK1200Modulator(44100);
+            
+            // make packet
+            string text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
+            byte[] data = System.Text.Encoding.ASCII.GetBytes(text);
+            ax25.Packet packet = new ax25.Packet("10.0.0.2", "10.0.0.1", new string[] { "10.0.0.254" }, data);
+            Console.WriteLine($"Outgoing packet: {text}");
+
+            // save wave
+            mod.GetSamples(packet, out float[] samples);
+            if(play) WaveStream.PlaySamples(44100, samples, play);
+            WaveStream.SaveWav16BitMono(@"test6.wav", 44100, samples);
+            
+            // load wave
+            WaveStream.ReadWavFile(@"test6.wav", out _, out int sr, out _, out float[] L, out _);
+
+            // read wave
+            ax25.AFSK1200Demodulator dem = new ax25.AFSK1200Demodulator(sr, 36, 0, new IPv4ConsolePacketHandler());
+            dem.AddSamples(L, L.Length);
+            Console.WriteLine($"Incoming packet: {ax25.Packet.Format(dem.LastPacket)}");            
+        }
+
 
         public class TestConsole : ax25.PacketHandler
         {
@@ -151,6 +176,43 @@ namespace ReadWave
             {
                 string packet = ax25.Packet.Format(bytes);
                 Console.WriteLine(frm, packet);
+            }
+        }
+
+        public class IPv4ConsolePacketHandler : ax25.PacketHandler
+        {
+            public IPv4ConsolePacketHandler() { }
+
+            public void handlePacket(sbyte[] bytes)
+            {
+                byte[] dp = ax25.Packet.FormatIPv4(bytes, out IPAddress f, out IPAddress t, out IPAddress[] v);
+                if (dp == null) return;
+                try
+                {
+                    string dsp = Encoding.ASCII.GetString(dp);
+                    string sv = ""; foreach (IPAddress ip in v) sv = (sv.Length > 0 ? "," : "") + ip.ToString();
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write("Incoming packet from ");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write(f);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(" to ");
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write(t);
+                    if (!string.IsNullOrEmpty(sv))
+                    {
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.Write(" via ");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write(sv);
+                    };
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(": ");
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.WriteLine(dsp);
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                catch (Exception ex) { Console.Write($"{ex}"); };
             }
         }
     }

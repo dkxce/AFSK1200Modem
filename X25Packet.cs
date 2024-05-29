@@ -1,6 +1,8 @@
+using Base58;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 
 namespace ax25
@@ -102,6 +104,116 @@ namespace ax25
             //System.Diagnostics.Debug.Assert(crc == AX25_CRC_CORRECT);
         }
 
+        public Packet(string toIPv4, string fromIPv4, string[] pathIPv4, byte[] frame)
+        {
+            if (frame == null || frame.Length == 0) throw new Exception($"Frame is Empty");
+            if (frame.Length > MAX_FRAME_SIZE) throw new Exception($"Maximum Frame Length is {MAX_FRAME_SIZE}");
+            string source = ConvertIpToBase58(fromIPv4);
+            string destination = ConvertIpToBase58(toIPv4);
+            List<string> path = new List<string>();
+            if (pathIPv4 != null && pathIPv4.Length > 0)
+                foreach (string ip in pathIPv4)
+                    path.Add(ConvertIpToBase58(ip));
+            string[] digipath = path.ToArray();
+
+            int n = 7 + 7 + 7 * digipath.Length + 2 + frame.Length;
+            sbyte[] bytes = new sbyte[n];
+
+            int offset = 0;
+
+            addCallsign(bytes, offset, destination, false, false);
+            offset += 7;
+
+            addCallsign(bytes, offset, source, digipath == null || digipath.Length == 0, false);
+            offset += 7;
+
+            for (int i = 0; i < digipath.Length; i++)
+            {
+                addCallsign(bytes, offset, digipath[i], i == digipath.Length - 1, false);
+                offset += 7;
+            };
+
+            bytes[offset++] = 0;
+            bytes[offset++] = 0;
+
+            for (int j = 0; j < frame.Length; j++)
+                bytes[offset++] = (sbyte)frame[j];
+
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                packet[size] = bytes[i];
+                crc_ccitt_update(packet[size]);
+                size++;
+            };
+
+            int crcl = (crc & 0xff) ^ 0xff;
+            int crch = (crc >> 8) ^ 0xff;
+
+            packet[size] = (sbyte)crcl;
+            crc_ccitt_update(packet[size]);
+            size++;
+
+            packet[size] = (sbyte)crch;
+            crc_ccitt_update(packet[size]);
+            size++;
+            //System.Diagnostics.Debug.Assert(crc == AX25_CRC_CORRECT);
+        }
+
+        public Packet(IPAddress toIPv4, IPAddress fromIPv4, IPAddress[] pathIPv4, byte[] frame)
+        {
+            if (frame == null || frame.Length == 0) throw new Exception($"Frame is Empty");
+            if (frame.Length > MAX_FRAME_SIZE) throw new Exception($"Maximum Frame Length is {MAX_FRAME_SIZE}");
+            string source = ConvertIpToBase58(fromIPv4.ToString());
+            string destination = ConvertIpToBase58(toIPv4.ToString());
+            List<string> path = new List<string>();
+            if (pathIPv4 != null && pathIPv4.Length > 0)
+                foreach (IPAddress ip in pathIPv4)
+                    path.Add(ConvertIpToBase58(ip.ToString()));
+            string[] digipath = path.ToArray();
+
+            int n = 7 + 7 + 7 * digipath.Length + 2 + frame.Length;
+            sbyte[] bytes = new sbyte[n];
+
+            int offset = 0;
+
+            addCallsign(bytes, offset, destination, false, false);
+            offset += 7;
+
+            addCallsign(bytes, offset, source, digipath == null || digipath.Length == 0, false);
+            offset += 7;
+
+            for (int i = 0; i < digipath.Length; i++)
+            {
+                addCallsign(bytes, offset, digipath[i], i == digipath.Length - 1, false);
+                offset += 7;
+            };
+
+            bytes[offset++] = 0;
+            bytes[offset++] = 0;
+
+            for (int j = 0; j < frame.Length; j++)
+                bytes[offset++] = (sbyte)frame[j];
+
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                packet[size] = bytes[i];
+                crc_ccitt_update(packet[size]);
+                size++;
+            };
+
+            int crcl = (crc & 0xff) ^ 0xff;
+            int crch = (crc >> 8) ^ 0xff;
+
+            packet[size] = (sbyte)crcl;
+            crc_ccitt_update(packet[size]);
+            size++;
+
+            packet[size] = (sbyte)crch;
+            crc_ccitt_update(packet[size]);
+            size++;
+            //System.Diagnostics.Debug.Assert(crc == AX25_CRC_CORRECT);
+        }
+
         public sbyte[] bytesWithCRC()
         {
             return Arrays.copyOf(packet, 0, size);
@@ -112,7 +224,7 @@ namespace ax25
             return Arrays.copyOf(packet, 0, size - 2);
         }
 
-        private static void addCallsign(sbyte[] bytes, int offset, string callsign, bool last)
+        private static void addCallsign(sbyte[] bytes, int offset, string callsign, bool last, bool uppercase = false)
         {
             int i;
             bool call_ended = false;
@@ -130,7 +242,7 @@ namespace ax25
                     call_ended = true;
                     c = ' ';
                 }
-                else
+                else if (uppercase)
                     c = char.ToUpper(c);
                 bytes[offset++] = (sbyte)(c << 1);
             };
@@ -207,6 +319,75 @@ namespace ax25
 
             offset += 2; // skip PID, control
             payload = Arrays.copyOf(packet, offset, size - 2); // chop off CRC
+        }
+
+        public static string ConvertIpToBase58(string dottedIpAddress)
+        {            
+            if (string.IsNullOrEmpty(dottedIpAddress)) return dottedIpAddress;
+            else
+            {
+                string[] splitIpAddress = dottedIpAddress.Split(new[] { '.' }, 4);
+                byte[] ips = new byte[4];
+                for (byte i = 0; i < ips.Length; i++) ips[i] = byte.Parse(splitIpAddress[i]);
+                return Base58Encoding.Encode(ips);
+            };
+        }
+
+        public static byte[] FormatIPv4(sbyte[] packet, out IPAddress fromIPv4, out IPAddress toIPv4, out IPAddress[] pathIPv4)
+        {
+            fromIPv4 = null;
+            toIPv4 = null;
+            pathIPv4 = null;
+            try
+            {
+                string source, destination;
+                string[] path = null;
+                sbyte[] payload;
+                int offset = 0;
+                int repeaters = 0;
+                int size = packet.Length;
+
+                destination = parseCallsign(packet, offset);
+                offset += 7;
+                source = parseCallsign(packet, offset);
+                offset += 7;
+
+                while (offset + 7 <= size && (packet[offset - 1] & 0x01) == 0)
+                {
+                    repeaters++;
+                    if (repeaters > 8) // missing LSB=1 to terminate the path
+                        break;
+
+                    string path_element = parseCallsign(packet, offset);
+                    offset += 7;
+                    if (path == null)
+                    {
+                        path = new string[1];
+                        path[0] = path_element;
+                    }
+                    else
+                    {
+                        string[] tmppath = new string[path.Length + 1];
+                        Array.Copy(path, tmppath, path.Length);
+                        tmppath[tmppath.Length - 1] = path_element;
+                        path = tmppath;
+                    };
+                }
+
+                offset += 2; // skip PID, control
+                payload = Arrays.copyOf(packet, offset, size);
+
+                fromIPv4 = new IPAddress(Base58Encoding.Decode(source));
+                toIPv4 = new IPAddress(Base58Encoding.Decode(destination));
+                pathIPv4 = new IPAddress[path == null ? 0 : path.Length];
+                for(byte i =0;i< pathIPv4.Length; i++) pathIPv4[i] = new IPAddress(Base58Encoding.Decode(path[i]));
+
+                return (byte[])(Array)payload;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            };
         }
 
         public static string Format(sbyte[] packet)
