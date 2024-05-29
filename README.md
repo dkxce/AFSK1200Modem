@@ -9,4 +9,4 @@ Usage
 
 You can use it as c# library for exchanging digital packet data between hamateur radios via air.     
 Just use `AFSK1200Modulator` as DAC and `AFSK1200Demodulator` or `DirectAudioAFSKDemodulator` as ADC.    
-Full samples available at [`AFSK1200ModemTest.cs`](AFSK1200ModemTest.cs).
+Full samples available at [`AFSK1200ModemTest.cs`](AFSK1200ModemTest.cs) or in based-on [APRSAIR application](https://github.com/dkxce/APRSAIR)
